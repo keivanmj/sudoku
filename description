@@ -1,0 +1,3 @@
+this project is a ai sudoku project that models the suduku like a csp
+it uses forward pruning algorithm to solve the suduku
+it shows that what number is inside of every block..
