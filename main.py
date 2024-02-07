@@ -1,11 +1,42 @@
 import math
 import numpy as np
 
-domain = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+domain = []
 cage_domains = []
+
 for i in range(81) :
+    domain = []
+    for j in range(10) :
+        domain.append(j)
     cage_domains.append(domain)
-    
+
+# cage_domains[31] = [x for x in cage_domains[31] if x != 3]
+# print(cage_domains)
+# cage_domains[31]=np.delete(cage_domains[31], [1], axis=0)
+# print
+# domain = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+# cage_domains = []
+# for i in range(81):
+#     if i == 30:
+#         cage_domains.append(domain + [10])
+#     else:
+#         cage_domains.append(domain)
+# big_array = np.array([np.array(list(range(1, 10))) for _ in range(81)])
+
+# # Add 10 to the 31st array inside the big array
+# big_array[30] = np.append(big_array[30], [10])
+# print(big_array)
+# cage_domains[0] = [x for x in cage_domains[30] if x != 3]
+
+# print(cage_domains)
+
+
+# big_array = [[list(range(1, 10)) for _ in range(9)] for _ in range(9)]
+
+# # Remove the number 3 from the 31st array inside the big array
+# big_array[30][2].remove(3)
+
+# print(big_array)
 
 square = []
 square_row = []
@@ -21,36 +52,53 @@ def turn_index_to_number(index, length):
     result = 0
     i = index[0]
     j = index[1]
-    result += (i * length) + j + 1
+    result += (i * length) + j
     return result
     
+def backward_pruning(number, index, cage_domains) :
+    #add number from row:
+    j = index[1]
+    for i in range(9) :
+        back_prune_index(number, (i, j), cage_domains)
+    #add number to column:
+    i = index[0]
+    j = 0
+    for j in range(9) :
+        back_prune_index(number, (i, j), cage_domains)
+    #add number from 3*3 square
+    # i = find_square[0]
+    # j = find_square[1]
+    square_i = math.floor(index[0]) * 3
+    square_j = math.floor(index[1]) * 3
+    for f in range(square_i, square_i + 3) :
+        for t in range(square_j, square_j + 3) :
+            if number not in cage_domains[turn_index_to_number(index, 9)] :
+                back_prune_index(number, (f, t), cage_domains)
+    return cage_domains
 
 def forward_pruning(number, index, cage_domains):
+    # cage_domains = cage_domains
     #delete number from row:
     j = index[1]
     for i in range(9) :
-        if i != index[0] :
-            prune_index(number, (i, j), cage_domains)
-        else :
-            cage_domains[turn_index_to_number(index, 9)].clear()
+        prune_index(number, (i, j), cage_domains)
     #delete number from column:
     i = index[0]
     j = 0
     for j in range(9) :
-        if j != index [1] :
-            prune_index(number, (i, j), cage_domains)
-            
+        prune_index(number, (i, j), cage_domains)
     #delete number from 3*3 square
-    i = find_square[0]
-    j = find_square[1]
-    for f in range(i * 3 + 3) :
-        for t in range(j * 3 + 3) :
+    # i = find_square[0]
+    # j = find_square[1]
+    square_i = math.floor(index[0]) * 3
+    square_j = math.floor(index[1]) * 3
+    for f in range(square_i, square_i + 3) :
+        for t in range(square_j, square_j + 3) :
             try :
                 prune_index(number, (f, t), cage_domains)
             except:
                 pass
-
-print(forward_pruning(6, (3, 4), cage_domains))
+    return cage_domains
 
 def find_square(index, square) :
     square_i = math.floor(index[0] / 3)
@@ -60,10 +108,24 @@ def find_square(index, square) :
         
     
 def prune_index(num, index, cage_domains):
-    number = turn_index_to_number(index)
-    cage_domains[number].remove(num)
+    number = turn_index_to_number(index, 9)
+    if num in cage_domains[number] :
+        cage_domains[number].remove(num)
     return cage_domains
 
+def back_prune_index(num, index, cage_domains) :
+    number = turn_index_to_number(index, 9)
+    if num not in cage_domains[number] :
+        cage_domains[number].append(num)
+    return cage_domains
+# print(back_prune_index(3, [1, 0], cage_domains))
+# forward_pruning(6, (0, 0), cage_domains)
+# # # for i in range(9) :
+# # #     for
+# print(cage_domains)
+# print("//////")
+# backward_pruning(6, (0, 0), cage_domains)
+# print(cage_domains)
 
 # array_9by9 = [[6, 0, 9, 0, 0, 7, 0, 3, 0],
 # [0, 0, 0, 0, 9, 0, 0, 0, 6],
