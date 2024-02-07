@@ -1,8 +1,6 @@
-row = 1
-col = 2
+a = [1, 2, 3, 4, 5, 6, 7, 8]
 
-for i in range(10) :
-    string = ''
-    string += str(row)
-    string += str(col)
-    print(string)
+b = a.pop()
+print(b)
+a.append(b)
+print(a)

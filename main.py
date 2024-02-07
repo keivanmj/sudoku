@@ -96,24 +96,26 @@ print(constraints)
 
 def is_safe(number, constraint, array, i, j) :
     index = [i , j]
-    print("i in is_safe: ")
-    print(i)
-    print("j in is_safe: ")
-    print(j)
-    if any(row[j] == number for row in array) :
-        if any(col[i] == number for col in array) :
-            print("about to call count_cages")
-            print("about to call goal_count")
+    # print("i in is_safe: ")
+    # print(i)
+    # print("j in is_safe: ")
+    # print(j)
+    if not any(row[j] == number for row in array) :
+        if not  any(col[i] == number for col in array) :
+            # print("constraint in is_safe: ")
+            # print(constraint)
+            # print("about to call count_cages")
+            # print("about to call goal_count")
             if count_cages(constraint, array_9by9) + number == goal_count(constraint):
-                print("about to call find_zeros")
-                if not find_zeros(constraint) :
+                # print("about to call find_zeros")
+                if not find_zeros(constraint, array_9by9) :
                     return True
         
             elif count_cages(constraint, array_9by9) + number < goal_count(constraint) :
-                print("called count_cages")
-                print("called goal_count")
-                print("about to call find_zeros")
-                if find_zeros(constraint) :
+                # print("called count_cages")
+                # print("called goal_count")
+                # print("about to call find_zeros")
+                if find_zeros(constraint, array_9by9) :
                     return True
     return False
 
@@ -122,25 +124,33 @@ def count_cages(readable_constraint, array) :
     counter = 0
     # size = len(readable_constraint)
     # readable_constraint.pop()
-    readable_constraint = cage_number_only(readable_constraint)
-    print("readable_contsraint in count_cages: ")
-    print(readable_constraint)
+    # print("readable_contsraint in count_cages: ")
+    # print(readable_constraint)
+    # readable_constraint2 = readable_constraint
+    # readable_constraint2 = cage_number_only(readable_constraint2)
+    # print("readable_contsraint in count_cages: ")
+    # print(readable_constraint)
+    goalCount = readable_constraint.pop()
     for cage_number in readable_constraint :
-        print("cage_number in count_cages: ")
-        print(cage_number)
+        # print("cage_number in count_cages: ")
+        # print(cage_number)
         translation = translate_cage_number(cage_number)
         i = translation[0]
-        print("i in count_cages: ")
-        print(i)
+        # print("i in count_cages: ")
+        # print(i)
         j = translation[1]
-        print("j in count_cages: ")
-        print(j)
+        # print("j in count_cages: ")
+        # print(j)
         # j = translate_cage_number(cage_number)
         counter += array[i - 1][j - 1]
+    readable_constraint.append(goalCount)
+    
     return counter
         
 
 def goal_count(readable_constraint) :
+    # print("constraint in goal_count: ")
+    # print(readable_constraint)
     return int(readable_constraint[-1])
 
 
@@ -152,9 +162,11 @@ def find_constraint(cageNumber, readable_constraints) :
          
             
 def find_zeros(constraint, array) :
-    for cageNumber in cage_number_only(readable_constraints(constraint)) :
+    goalCount = constraint.pop()
+    for cageNumber in constraint :
         if (check_cage(translate_cage_number(cageNumber), array)) == 0 :
             return True
+    constraint.append(goalCount)
     return False
 
 
@@ -165,7 +177,7 @@ def check_cage(cage_number, array) :
      
 
 def translate_cage_number(string) :
-    print("string in translate_cage_number: " + string)
+    # print("string in translate_cage_number: " + string)
     index = []
     index.append(int(string[0]))
     index.append(int(string[1]))
@@ -211,31 +223,26 @@ def cage_numbers_all_constraints (readable_constraints) :
 def solve_sudoku(array_9by9):
     # Find an empty cell
     counter = 0
-    for row in range(9):
-        for col in range(9):
+    for col in range(9):
+        for row in range(9):
+            print("row and col: ")
+            print(row, col)
             #find constraint
             string = ''
             string += str(row + 1)
             string += str(col + 1)
-            print("string in solve_sudoku: " + string)
-            # print(string)
             constraint = find_constraint(string, readable_constraints(constraints))
-            print("called find_constraint")
-            print("constraint in solve_sudoku: ")
-            print(constraint)
             counter += 1
-            print("counter in solve_sudoku: ")
-            print(counter)
-            print("col in solve_sudoku: ")
-            print(col)
             if array_9by9[row][col] == 0:
                 # Try to fill the cell with a valid number
                 for number in range(1, 10):
-                    print("number: ")
-                    print(number)
-                    print("about to call is_safe: ")
+                    # print("number: ")
+                    # print(number)
+                    # print("about to call is_safe: ")
                     if is_safe(number, constraint, array_9by9, row, col) :
                         array_9by9[row][col] = number
+                        print(number)
+                        # for row
                         print(array_9by9)
                         # Recursively solve the rest of the puzzle
                         if solve_sudoku(array_9by9):
@@ -243,6 +250,8 @@ def solve_sudoku(array_9by9):
                             return True
                         # Backtrack
                         array_9by9[row][col] = 0
+                        if array_9by9[row][col] == 0 :
+                            print("back tracked!")
                 return False
     return True
 
@@ -251,4 +260,41 @@ print("constraints: ")
 print(constraints)
 print("readable constraints: ")
 print(readable_constraints(constraints))
-solve_sudoku(array_9by9)
+solve = solve_sudoku(array_9by9)
+print(solve)
+
+
+
+# 11 21 22 > 14
+# 12 > 4
+# 13 23 > 10
+# 14 15 25 > 16 
+# 16 > 7
+# 26 27 > 6 
+# 17 18 > 3
+# 19 29 > 14 
+# 28 38 39 > 16
+# 35 36 37 46 > 20 
+# 24 34 > 9
+# 32 33 42 > 18
+# 31 41 51 > 14
+# 43 > 6
+# 44 45 > 11
+# 47 48 49 > 13
+# 61 > 7
+# 52 62 72 > 12
+# 53 63 73 > 13
+# 54 64 65 66 > 23  
+# 57 > 6
+# 58 59 > 12
+# 55 56 > 12
+# 68 69 > 10
+# 67 76 77 78 88 > 20
+# 79 89 > 13 
+# 71 81 82 83 > 23 
+# 74 84 > 13
+# 91 92 93 > 14
+# 94 > 2
+# 85 95 > 9
+# 86 87 96 > 18
+# 97 98 99 > 16
