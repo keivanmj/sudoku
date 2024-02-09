@@ -1,3 +1,23 @@
-this project is a ai sudoku project that models the suduku like a csp
-it uses forward pruning algorithm to solve the suduku
-it shows that what number is inside of every block..
+this code includes:
+cage_domains: possible values to be added for each cell in the sudoku.
+Functions: from top to bottom:
+turn index to number: turns the given index to a number between 1 to 81 to go through cage_domains.
+backward_pruning: give back the elements that were taken from the possible values that could be assigned to every cage
+forward_pruning: takes away some of the possible values that can be placed inside of every cell
+prune_index: take possible numbers that can be placed inside of one particular cell
+back_prune_index: gives back an element to possible values of a certain cage
+get_mrv_cell: the MRV function
+get_lcv_values: the LCV function
+get_next_cell & get_sorted_values: the heuristic function
+is_number_in_column: check if a number is in a column
+is_number_in_row: check if a number is in a row
+is_in_square: check if a number is in a 3*3 subgrid square
+is_safe: checks to see if a number is safe and valid to be placed inside of a cell
+count_cages: counts the number inside of a cage that contains a certain cell
+goal_count: gets the goal number that values of a comination of cells should reach
+readable_constraint: removes the '>' value from input cage rules to make it more readable
+find_constraint: finds a certain constraint from all of the constraints
+find_zeros: checks if any cell is empty from inside of a constraint
+check_cage: checks for the value of a cage
+solve_sodoku: main function that goes through every cell and gives a value to every cell and backtracks if its wrong
+
